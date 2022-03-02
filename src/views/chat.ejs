@@ -1,0 +1,113 @@
+<!doctype html>
+<html class="no-js " lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="Responsive Bootstrap 4 and web Application ui kit.">
+
+    <title>Chat App</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Favicon-->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="assets/css/style.min.css">
+</head>
+
+<body class="theme-blush">
+
+    <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="m-t-30"><img class="zmdi-hc-spin" src="assets/images/loader.svg" width="48" height="48"
+                    alt="Aero"></div>
+            <p>Please wait...</p>
+        </div>
+    </div>
+
+    <section class="container-fluid">
+        <div class="body_scroll">
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="chat_list">
+                                <div class="input-group">
+                                    <div style="text-align: center;">
+                                        MEMBERS
+                                    </div>
+                                </div>
+                                <ul class="user_list list-unstyled mb-0 mt-3">
+                                    <li>
+                                        <a href="javascript:void(0);">
+                                            <!-- <img src="assets/images/xs/avatar1.jpg" alt="avatar" /> -->
+                                            <div class="about">
+                                                <div class="name">Vincent Porter</div>
+                                                <div class="status online"> <i class="zmdi zmdi-circle"></i> left 7
+                                                    mins ago </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="chat_window body">
+                                <div class="chat-header">
+                                    <div class="user">
+                                        <!-- <img src="assets/images/xs/avatar2.jpg" alt="avatar" /> -->
+                                        <div class="chat-about">
+                                            <div class="chat-with">Champions Channel</div>
+                                            <div class="chat-num-messages">Sammy is typing ...</div>
+                                        </div>
+                                    </div>
+                                    <a href="javascript:void(0);"
+                                        class="list_btn btn btn-info btn-round float-md-right"><i
+                                            class="zmdi zmdi-comments"></i></a>
+                                </div>
+                                <hr>
+                                <ul class="chat-history" style="height: 80vh;max-height: 80vh; overflow-y: scroll;">
+                                    <li class="clearfix">
+                                        <div class="status online message-data text-right">
+                                            <span class="time">10:10 AM, Today</span>
+                                            <span class="name">Michael</span>
+                                            <i class="zmdi zmdi-circle me"></i>
+                                        </div>
+                                        <div class="message other-message float-right"> Hi Aiden, how are you? How is
+                                            the project coming along? </div>
+                                    </li>
+                                    <li>
+                                        <div class="status message-data">
+                                            <span class="name">Aiden</span>
+                                            <span class="time">10:12 AM, Today</span>
+                                        </div>
+                                        <div class="message my-message">
+                                            <p>Are we meeting today? Project has been already finished and I have
+                                                results to show you.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <div class="chat-box">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="zmdi zmdi-mail-send"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="Enter text here..."
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+    <script src="assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
+
+    <script src="assets/bundles/mainscripts.bundle.js"></script><!-- Custom Js -->
+</body>
+
+</html>

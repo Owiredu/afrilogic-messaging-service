@@ -1,11 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import UserModel from '../models/UserModel';
+import ChannelModel from '@models/ChannelModel';
 
 
 const indexController = {
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadPage: async function(req: Request, res: Response, next: NextFunction) {
-        res.render("index");
+        // load all the channels 
+        const channelsData = await ChannelModel.find({});
+
+        // send response to the webpage
+        res.render("index", { channelsData: channelsData });
     }
 
 };

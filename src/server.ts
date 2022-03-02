@@ -10,12 +10,28 @@ import 'express-async-errors';
 import logger from 'jet-logger';
 import { CustomError } from '@shared/errors';
 
-import indexRouter from './routes/index';
+import mongoose from 'mongoose';
+import dbConfig from '@shared/db_config';
+
+import indexRouter from '@routes/index';
+import chatRouter from '@routes/chat';
 
 
 // Constants
 const app = express();
 
+// configure mongodb and connect to server
+if (process.env.NODE_ENV === 'development') {
+    mongoose.connect(
+        // eslint-disable-next-line max-len
+        `mongodb://${dbConfig.offline.hostname}:${dbConfig.offline.port.toString()}/${dbConfig.offline.dbname}`
+    );
+} else {
+    mongoose.connect(
+        // eslint-disable-next-line max-len
+        `mongodb://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.online.dbname}?authSource=admin&readPreference=primary&directConnection=true`
+    );
+}
 
 /***********************************************************************************
  *                                  Middlewares
@@ -23,7 +39,7 @@ const app = express();
 
 // Common middlewares
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Show routes called in console during development
@@ -57,9 +73,11 @@ app.use(express.static(staticDir));
 
 // Add index router
 app.use('/', indexRouter);
+app.use('/chat', chatRouter);
 
 
 // Error handling
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) => {
     logger.err(err, true);
     const status = (err instanceof CustomError ? err.HttpStatus : StatusCodes.BAD_REQUEST);

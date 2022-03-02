@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import indexController from '../controllers/index';
+import indexController from '@controllers/index';
 
 
-// Export the base-router
+// create index router
 const indexRouter = Router();
 
 // Setup routers
-indexRouter.use('/', indexController.loadPage);
+indexRouter.get('/', indexController.loadPage);
 
 // Export default.
 export default indexRouter;
