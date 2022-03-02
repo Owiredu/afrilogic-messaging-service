@@ -7,9 +7,10 @@ import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
 
-import apiRouter from './routes/api';
 import logger from 'jet-logger';
 import { CustomError } from '@shared/errors';
+
+import indexRouter from './routes/index';
 
 
 // Constants
@@ -37,11 +38,26 @@ if (process.env.NODE_ENV === 'production') {
 
 
 /***********************************************************************************
+ *                                  Front-end content
+ **********************************************************************************/
+
+// view engine setup
+// Set views dir
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+// Set static dir
+const staticDir = path.join(__dirname, 'public');
+app.use(express.static(staticDir));
+
+
+/***********************************************************************************
  *                         API routes and error handling
  **********************************************************************************/
 
-// Add api router
-app.use('/api', apiRouter);
+// Add index router
+app.use('/', indexRouter);
+
 
 // Error handling
 app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) => {
@@ -51,25 +67,6 @@ app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) 
         error: err.message,
     });
 });
-
-
-/***********************************************************************************
- *                                  Front-end content
- **********************************************************************************/
-
-// Set views dir
-const viewsDir = path.join(__dirname, 'views');
-app.set('views', viewsDir);
-
-// Set static dir
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
-
-// Serve index.html file
-app.get('*', (_: Request, res: Response) => {
-    res.sendFile('index.html', {root: viewsDir});
-});
-
 
 
 // Export here and start in a diff file (for testing).
