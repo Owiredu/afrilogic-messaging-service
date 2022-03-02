@@ -32,7 +32,7 @@ UserSchema.pre("save", function (next) {
     });
 });
 
-UserSchema.methods.comparePassword = function (candidatePassword, cb) {
+UserSchema.methods.comparePassword = function (candidatePassword: string|Buffer, cb: CallableFunction) {
     bcrypt.compare(candidatePassword, this.password, async function (err, isMatch) {
         if (err) return cb(err);
         cb(null, isMatch);
