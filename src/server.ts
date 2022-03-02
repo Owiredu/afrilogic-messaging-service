@@ -20,6 +20,10 @@ import chatRouter from '@routes/chat';
 // Constants
 const app = express();
 
+/***********************************************************************************
+ *                                MongoDB Connection
+ **********************************************************************************/
+
 // configure mongodb and connect to server
 if (process.env.NODE_ENV === 'development') {
     mongoose.connect(
