@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import UserModel from '../models/UserModel';
 
 
 const indexController = {
