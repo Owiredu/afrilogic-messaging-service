@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express';
 import indexController from '@controllers/index';
 
@@ -6,10 +7,11 @@ import indexController from '@controllers/index';
 const indexRouter = Router();
 
 // Setup routers
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 indexRouter.get('/', indexController.loadPage);
 
 indexRouter.post('/join', indexController.joinChannel);
+
+indexRouter.get('/logout', indexController.logout);
 
 // Export default.
 export default indexRouter;

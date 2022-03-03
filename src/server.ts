@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
+
 
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
@@ -11,10 +13,26 @@ import logger from 'jet-logger';
 import { CustomError } from '@shared/errors';
 
 import mongoose from 'mongoose';
-import dbConfig from '@shared/db_config';
+import MongoStore from 'connect-mongo';
+import session from 'express-session';
+import compression from 'compression';
+import cors from 'cors';
+
+import dbConfig from '@utils/db_config';
 
 import indexRouter from '@routes/index';
 import chatRouter from '@routes/chat';
+
+// define custom session data
+declare module 'express-session' {
+    interface SessionData {
+        user: {
+            docID: string,
+            username: string,
+            channel: string
+        }
+    }
+}
 
 
 // Constants
@@ -27,12 +45,10 @@ const app = express();
 // configure mongodb and connect to server
 if (process.env.NODE_ENV === 'development') {
     mongoose.connect(
-        // eslint-disable-next-line max-len
         `mongodb://${dbConfig.offline.hostname}:${dbConfig.offline.port.toString()}/${dbConfig.offline.dbname}`
     );
 } else {
     mongoose.connect(
-        // eslint-disable-next-line max-len
         `mongodb://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.online.dbname}?authSource=admin&readPreference=primary&directConnection=true`
     );
 }
@@ -45,6 +61,8 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
+app.use(compression());
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === 'development') {
@@ -55,6 +73,31 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.NODE_ENV === 'production') {
     app.use(helmet());
 }
+
+// set session
+// set the session data
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(
+    session({
+        secret: "iwassupposedtobeasecretobeasecretbutiamnotanymore",
+        store: MongoStore.create({
+            // specify connection string to the mongodb database to store the sessions in
+            mongoUrl: process.env.NODE_ENV === 'development' ?
+                `mongodb://${dbConfig.offline.hostname}:${dbConfig.offline.port.toString()}/${dbConfig.sessionDb}` :
+                `mongodb://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.sessionDb}?authSource=admin&readPreference=primary&directConnection=true`,
+            // remove expired sessions at 10 minutes intervals
+            autoRemove: "interval",
+            autoRemoveInterval: 10,
+            // encrypt session data
+            crypto: {
+                secret: 'afrilogic'
+            }
+        }),
+        saveUninitialized: true,
+        cookie: { maxAge: oneDay },
+        resave: false,
+    })
+);
 
 
 /***********************************************************************************

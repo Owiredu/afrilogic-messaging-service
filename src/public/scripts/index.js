@@ -37,6 +37,15 @@ $(document).ready(function () {
         });
     }
 
+    // hide and show 
+    $("input[name='existingUser']").on("change", function(e) {
+        if ($(this).prop("checked")) {
+            $(".newUsersOnly").hide();
+        } else {
+            $(".newUsersOnly").show();
+        }
+    });
+
     // join channel button click event
     $("button[name='joinChannelBtn']").on("click", function (event) {
         event.preventDefault();
@@ -50,7 +59,7 @@ $(document).ready(function () {
                     pattern: /^.{1,50}$/
                 },
                 'fullname': {
-                    required: true,
+                    required: false,
                     minlength: 3,
                     pattern: /^.{1,50}$/
                 },
@@ -74,10 +83,6 @@ $(document).ready(function () {
         // start spinner
         $("button[name='joinChannelBtn']").html(`JOINING CHANNEL <span class="spinner-border spinner-border-sm"></span>`);
 
-        // get form
-        var joinChannelForm = $("form[name='joinChannelForm']")[0];
-        var data = new FormData(joinChannelForm);
-
         // disable form clicks and keypress events
         $("input[name='username']").attr("disabled", "disabled");
         $("input[name='fullname']").attr("disabled", "disabled");
@@ -90,15 +95,14 @@ $(document).ready(function () {
 
             url: "/join",
 
-            enctype: "multipart/form-data",
+            enctype: "application/x-www-form-urlencoded",
 
-            processData: false,
-
-            contentType: false,
-
-            cache: false,
-
-            data: data,
+            data: {
+                username: $("input[name='username']").val().trim(),
+                fullname: $("input[name='fullname']").val().trim(),
+                channel: $("select[name='channel']").val().trim(),
+                existingUser: $("input[name='existingUser']").prop("checked"),
+            },
 
             success: function (result, status, xhr) {
                 // stop spinner
