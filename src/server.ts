@@ -17,6 +17,9 @@ import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import compression from 'compression';
 import cors from 'cors';
+import { Server as SocketIO } from 'socket.io';
+import http from 'http';
+import https from 'https';
 
 import dbConfig from '@utils/db_config';
 
@@ -35,7 +38,7 @@ declare module 'express-session' {
 }
 
 
-// Constants
+// instantiate express app
 const app = express();
 
 /***********************************************************************************
@@ -133,6 +136,17 @@ app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) 
     });
 });
 
+/************************************************************************************
+ *                                   Setup Socket.io
+ ***********************************************************************************/
+
+ const server = http.createServer(app);
+ const io = new SocketIO(server);
+ 
+ io.sockets.on('connect', () => {
+     return app.set('socketio', io);
+ });
+
 
 // Export here and start in a diff file (for testing).
-export default app;
+export default server;

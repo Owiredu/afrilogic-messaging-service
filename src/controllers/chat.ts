@@ -10,6 +10,7 @@ const chatController = {
             // send the response to the webpage
             res.render("chat");
         } else {
+            // redirect to join in page
             res.redirect('/');
         }
     }

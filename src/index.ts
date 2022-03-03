@@ -4,7 +4,7 @@ import server from './server';
 
 
 // Constants
-const serverStartMsg = 'Express server started on port: ',
+const serverStartMsg = 'Chat server started on port: ',
         port = (process.env.PORT || 3000);
 
 // Start server
