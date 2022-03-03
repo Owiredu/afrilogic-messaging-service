@@ -4,6 +4,9 @@ $(document).ready(function () {
         element.scrollTop(1E10);
     }
 
+    // scroll to the bottom of the chat for the most recent chat
+    scrollToBottom($("#chatHistory"));
+
     // Setup socket-io main connection
     const socket = io('http://localhost:3001');
 
@@ -27,13 +30,13 @@ $(document).ready(function () {
     });
 
     // add message received to chat history
-    let addMessageReceived = (data) => {
+    let addMessageSent = (data) => {
         const previousChats = $("#chatHistory").html();
         const msgElement = `
         <li class="clearfix">
-            <div class="status online message-data text-right">
-                <span class="time">${data.timestamp}</span>
-                <span class="name">${data.senderName}</span>
+            <div class="status message-data text-right">
+                <span class="time">${new Date(data.timestamp)}</span>
+                <span class="name">You</span>
             </div>
             <div class="message other-message float-right">${data.message}</div>
         </li>
@@ -42,13 +45,13 @@ $(document).ready(function () {
     }
 
     // message sent to chat history
-    let addMessageSent = (data) => {
+    let addMessageReceived = (data) => {
         const previousChats = $("#chatHistory").html();
         const msgElement = `
         <li>
             <div class="status message-data">
                 <span class="name">${data.senderName}</span>
-                <span class="time">${data.timestamp}</span>
+                <span class="time">${new Date(data.timestamp)}</span>
             </div>
             <div class="message my-message">
                 <p>${data.message}</p>
@@ -80,7 +83,7 @@ $(document).ready(function () {
                 // compose the data to be sent
                 const data = {
                     senderName: $(this).attr("data-username"),
-                    timestamp: new Date(),
+                    timestamp: Date.now(),
                     message: message,
                     channelID: $(this).attr("data-channel")
                 };

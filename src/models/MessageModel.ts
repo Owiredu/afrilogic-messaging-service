@@ -1,17 +1,18 @@
+import { DateTime } from 'luxon';
 import mongoose from 'mongoose';
 
 interface Message {
     text: string,
-    datetime: Date,
-    user: mongoose.Types.ObjectId
+    datetime: DateTime,
+    sender: mongoose.Types.ObjectId
     channel: mongoose.Types.ObjectId
 }
 
 // create user schema
 const MessageSchema = new mongoose.Schema<Message>({
     text: { type: String, required: true },
-    datetime: { type: Date, required: true, default: () => { return new Date() }},
-    user: {
+    datetime: { type: Date, required: true, default: () => { return DateTime.now() }},
+    sender: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true

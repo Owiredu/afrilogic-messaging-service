@@ -26,6 +26,8 @@ import dbConfig from '@utils/db_config';
 import indexRouter from '@routes/index';
 import chatRouter from '@routes/chat';
 
+import chatController from '@controllers/chat';
+
 // define custom session data
 declare module 'express-session' {
     interface SessionData {
@@ -150,14 +152,17 @@ const io = new SocketIO(server);
 io.sockets.on('connect', (socket) => {
     // handle chat messages
     socket.on('chat', 
-    (data: {
+    async (data: {
         senderName: string,
-        timestamp: Date,
+        timestamp: number,
         message: string,
         channelID: string
     }) => {
+        // add the message to the database
+        await chatController.addNewMessage(data);
+        
         // send the message to only people in the channel
-        io.emit('chat-' + data.channelID, data);
+        socket.broadcast.emit('chat-' + data.channelID, data);
     });
 
     // handle typing signals
@@ -167,7 +172,7 @@ io.sockets.on('connect', (socket) => {
         channelID: string
     }) => {
         // send the message to only people in the channel
-        io.emit('typing-' + data.channelID, data);
+        socket.broadcast.emit('typing-' + data.channelID, data);
     });
 
     // handle user disconnection

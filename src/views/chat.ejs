@@ -70,6 +70,25 @@
                                 <hr>
                                 <ul class="chat-history" id="chatHistory" style="height: 80vh;max-height: 80vh; overflow-y: scroll;">
                                     <!-- CHAT HISTORY GOES HERE -->
+                                    <% for (let i = 0; i < messageDocs.length; i++) { %> 
+                                        <% if (messageDocs[i].sender.username == session.user.username) { %> 
+                                            <li class="clearfix">
+                                                <div class="status message-data text-right">
+                                                    <span class="time"><%= messageDocs[i].datetime %></span>
+                                                    <span class="name">You</span>
+                                                </div>
+                                                <div class="message other-message float-right"><%= messageDocs[i].text %></div>
+                                            </li>
+                                        <% } else { %> 
+                                            <li class="clearfix">
+                                                <div class="status message-data">
+                                                    <span class="time"><%= messageDocs[i].datetime %></span>
+                                                    <span class="name"><%= messageDocs[i].sender.username %></span>
+                                                </div>
+                                                <div class="message my-message"><%= messageDocs[i].text %></div>
+                                            </li>
+                                        <% } %> 
+                                    <% } %>
                                 </ul>
                                 <div class="chat-box">
                                     <div class="input-group">
@@ -93,6 +112,8 @@
     <script src="assets/bundles/vendorscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js -->
 
     <script src="assets/bundles/mainscripts.bundle.js"></script>
+    <!-- Luxon Date and Time library -->
+    <script src="luxon/luxon.min.js"></script>
     <!-- Socket IO -->
     <script src="socketio/socket.io.js"></script>
     <!-- Custom Js -->
