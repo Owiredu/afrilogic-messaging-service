@@ -32,7 +32,10 @@ declare module 'express-session' {
         user: {
             docID: string,
             username: string,
-            channel: string
+            channel: {
+                id: string,
+                name: string
+            }
         }
     }
 }
@@ -146,12 +149,30 @@ const io = new SocketIO(server);
 // handle chat
 io.sockets.on('connect', (socket) => {
     // handle chat messages
-    socket.on('chat message', (data) => {
-        io.emit('chat message', data);
+    socket.on('chat', 
+    (data: {
+        senderName: string,
+        timestamp: Date,
+        message: string,
+        channelID: string
+    }) => {
+        // send the message to only people in the channel
+        io.emit('chat-' + data.channelID, data);
+    });
+
+    // handle typing signals
+    socket.on('typing', 
+    (data: {
+        senderName: string,
+        channelID: string
+    }) => {
+        // send the message to only people in the channel
+        io.emit('typing-' + data.channelID, data);
     });
 
     // handle user disconnection
-    socket.on("disconnect", () => {
+    socket.on("disconnect", 
+    () => {
         console.log("User diconnected");
     });
 });

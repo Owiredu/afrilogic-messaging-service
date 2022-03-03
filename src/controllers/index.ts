@@ -69,7 +69,10 @@ const indexController = {
                             req.session.user = {
                                 docID: userDoc._id.toString(),
                                 username: userDoc.username,
-                                channel: userDoc.channel.toString()
+                                channel: {
+                                    id: channelDoc._id.toString(),
+                                    name: channelDoc.name
+                                }
                             };
 
                             // send success message
@@ -113,7 +116,10 @@ const indexController = {
                         req.session.user = {
                             docID: userDoc._id.toString(),
                             username: userDoc.username,
-                            channel: userDoc.channel.toString()
+                            channel: {
+                                id: channelDoc._id.toString(),
+                                name: channelDoc.name
+                            }
                         };
 
                         // send success message

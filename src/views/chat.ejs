@@ -58,8 +58,8 @@
                                     <div class="user">
                                         <!-- <img src="assets/images/xs/avatar2.jpg" alt="avatar" /> -->
                                         <div class="chat-about">
-                                            <div class="chat-with">Champions Channel</div>
-                                            <div class="chat-num-messages">Sammy is typing ...</div>
+                                            <div class="chat-with"><%= session.user.channel.name %></div>
+                                            <div class="chat-num-messages" id="typingNotice" style="height: 30px;"></div>
                                         </div>
                                     </div>
                                     <div class="setting">
@@ -77,7 +77,7 @@
                                             <span class="input-group-text"><i class="zmdi zmdi-mail-send"></i></span>
                                         </div>
                                         <input type="text" class="form-control" placeholder="Enter text here..." name="message" 
-                                        data-username="<%= session.user.username %>" data-username="<%= session.user.channel %>"
+                                        data-username="<%= session.user.username %>" data-channel="<%= session.user.channel.id %>"
                                         />
                                     </div>
                                 </div>

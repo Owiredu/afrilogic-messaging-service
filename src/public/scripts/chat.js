@@ -13,8 +13,17 @@ $(document).ready(function () {
     });
 
     // handle chat messages
-    socket.on('chat message', function (data) {
+    socket.on('chat-' + $("input[name='message']").attr("data-channel"), function (data) {
+        // add the message received to chat history
         addMessageReceived(data);
+
+        // scroll to the bottom of the chat for the most recent chat
+        scrollToBottom($("#chatHistory"));
+    });
+
+    // handle typing signals
+    socket.on('typing-' + $("input[name='message']").attr("data-channel"), function (data) {
+        setTypingMessage(data);
     });
 
     // add message received to chat history
@@ -49,8 +58,18 @@ $(document).ready(function () {
         $("#chatHistory").html(previousChats + msgElement);
     }
 
+    // set typing message
+    let setTypingMessage = (data) => {
+        $("#typingNotice").text(data.senderName + " is typing...");
+        // clear the message after 3 seconds
+        setTimeout(() => {
+            $("#typingNotice").text("");
+        }, 3000);
+    }
+
+    var typingCounter = 0;
     // add event to message field
-    $("input[name='message']").on("keypress", function (e) {
+    $("input[name='message']").on("keypress keyup", function (e) {
         // handle event only if the enter key is pressed
         if (e.which == 13) {
             // get the message
@@ -67,7 +86,7 @@ $(document).ready(function () {
                 };
 
                 // send message
-                socket.emit('chat message', data);
+                socket.emit('chat', data);
 
                 // add the message to the sender's chat history
                 addMessageSent(data);
@@ -77,6 +96,24 @@ $(document).ready(function () {
 
                 // scroll to the bottom of the chat for the most recent chat
                 scrollToBottom($("#chatHistory"));
+            }
+        } else {
+            // increment typing counter
+            typingCounter += 1;
+
+            // send typing signal if 3 or more character have been typed
+            if (typingCounter >= 3 && $(this).val().trim().length >= 3) {
+                // compose the data to be sent
+                const data = {
+                    senderName: $(this).attr("data-username"),
+                    channelID: $(this).attr("data-channel")
+                };
+
+                // send message
+                socket.emit('typing', data);
+
+                // reset typing counter
+                typingCounter = 0;
             }
         }
     });
