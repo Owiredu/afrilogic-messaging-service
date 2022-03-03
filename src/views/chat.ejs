@@ -68,33 +68,17 @@
                                     <a href="javascript:void(0);" class="list_btn btn btn-info btn-round float-md-right"><i class="zmdi zmdi-comments"></i></a>
                                 </div>
                                 <hr>
-                                <ul class="chat-history" style="height: 80vh;max-height: 80vh; overflow-y: scroll;">
-                                    <li class="clearfix">
-                                        <div class="status online message-data text-right">
-                                            <span class="time">10:10 AM, Today</span>
-                                            <span class="name">Michael</span>
-                                        </div>
-                                        <div class="message other-message float-right"> Hi Aiden, how are you? How is
-                                            the project coming along? </div>
-                                    </li>
-                                    <li>
-                                        <div class="status message-data">
-                                            <span class="name">Aiden</span>
-                                            <span class="time">10:12 AM, Today</span>
-                                        </div>
-                                        <div class="message my-message">
-                                            <p>Are we meeting today? Project has been already finished and I have
-                                                results to show you.</p>
-                                        </div>
-                                    </li>
+                                <ul class="chat-history" id="chatHistory" style="height: 80vh;max-height: 80vh; overflow-y: scroll;">
+                                    <!-- CHAT HISTORY GOES HERE -->
                                 </ul>
                                 <div class="chat-box">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="zmdi zmdi-mail-send"></i></span>
                                         </div>
-                                        <input type="text" class="form-control" placeholder="Enter text here..."
-                                            required>
+                                        <input type="text" class="form-control" placeholder="Enter text here..." name="message" 
+                                        data-username="<%= session.user.username %>" data-username="<%= session.user.channel %>"
+                                        />
                                     </div>
                                 </div>
                             </div>

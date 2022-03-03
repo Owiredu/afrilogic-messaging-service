@@ -1,104 +1,83 @@
 $(document).ready(function () {
-    /**
- * Start everything from here
- */
-    (function () {
-        // Setup socket-io main connection
-        console.log('Connecting to socket-io');
-        const socket = io('http://localhost:3001');
-        socket.on('connect', () => {
-            socketIo = socket;
-            console.log('Socket-io connected');
-            // Connect to the room
-            connectToRm(socket.id);
-            setupSendMsgListener(socket.id)
-            receiveMessage(socket);
-        });
-    })();
-
-
-    /**
-     * Connect to the socket-io room for the chat window.
-     * 
-     * @param {*} socketId 
-     */
-    function connectToRm(socketId) {
-        console.log('Connecting to socket room');
-        Http.Get('/api/chat/connect-socket-room/' + socketId)
-            .then(() => {
-                console.log('Connected to socket room');
-            });
+    // scroll to the top of the window to see error message
+    let scrollToBottom = function (element = null) {
+        element.scrollTop(1E10);
     }
 
+    // Setup socket-io main connection
+    const socket = io('http://localhost:3001');
 
-    /**
-     * Send a message.
-     * 
-     * @param {*} socketId
-     */
-    function setupSendMsgListener(socketId) {
-        document.addEventListener('click', function (event) {
-            event.preventDefault();
-            var ele = event.target;
-            // Detect btn click
-            if (ele.matches('#send-msg-btn')) {
-                const inputEle = document.getElementById('send-msg-input');
-                const message = inputEle.value;
-                inputEle.value = '';
-                // Call API
-                Http.Post('/api/chat/emit-message', {
-                    socketId,
-                    message,
-                })
-                    .then(response => response.json())
-                    .then((resp) => {
-                        addMessage({
-                            senderName: resp.senderName,
-                            timestamp: Date.now(),
-                            content: message,
-                        });
-                    });
+    // handle connection event
+    socket.on('connect', () => {
+        console.log("Connection established");
+    });
+
+    // handle chat messages
+    socket.on('chat message', function (data) {
+        addMessageReceived(data);
+    });
+
+    // add message received to chat history
+    let addMessageReceived = (data) => {
+        const previousChats = $("#chatHistory").html();
+        const msgElement = `
+        <li class="clearfix">
+            <div class="status online message-data text-right">
+                <span class="time">${data.timestamp}</span>
+                <span class="name">${data.senderName}</span>
+            </div>
+            <div class="message other-message float-right">${data.message}</div>
+        </li>
+        `;
+        $("#chatHistory").html(previousChats + msgElement);
+    }
+
+    // message sent to chat history
+    let addMessageSent = (data) => {
+        const previousChats = $("#chatHistory").html();
+        const msgElement = `
+        <li>
+            <div class="status message-data">
+                <span class="name">${data.senderName}</span>
+                <span class="time">${data.timestamp}</span>
+            </div>
+            <div class="message my-message">
+                <p>${data.message}</p>
+            </div>
+        </li>
+        `;
+        $("#chatHistory").html(previousChats + msgElement);
+    }
+
+    // add event to message field
+    $("input[name='message']").on("keypress", function (e) {
+        // handle event only if the enter key is pressed
+        if (e.which == 13) {
+            // get the message
+            const message = $(this).val().trim();
+
+            // send the message if it's not an empty string
+            if (message.length > 0) {
+                // compose the data to be sent
+                const data = {
+                    senderName: $(this).attr("data-username"),
+                    timestamp: new Date(),
+                    message: message,
+                    channelID: $(this).attr("data-channel")
+                };
+
+                // send message
+                socket.emit('chat message', data);
+
+                // add the message to the sender's chat history
+                addMessageSent(data);
+
+                // clear text field
+                $(this).val("");
+
+                // scroll to the bottom of the chat for the most recent chat
+                scrollToBottom($("#chatHistory"));
             }
-        });
-    }
-
-
-    /**
-     * Receive a socket message.
-     * 
-     * @param {*} socket
-     */
-    function receiveMessage(socket) {
-        socket.on('emit-msg', (msg) => {
-            addMessage(msg);
-        });
-    }
-
-
-    /**
-     * Get the html content for a single chat message
-     * 
-     * @param {*} msg 
-     * @returns 
-     */
-    function addMessage(msg) {
-        const chatWindow = document.getElementById('chat-window');
-        const msgEle = `
-        <div class="chat-msg">
-            <div>
-                <span class="msg-name">
-                    ${msg.senderName}
-                </span>
-                <span class="msg-timestamp">
-                    ${moment(msg.timestamp).format('MM/DD/YYYY h:mm:ssa')}
-                </span>
-            </div>
-            <div>
-                ${msg.content}
-            </div>
-        </div>
-    `;
-        chatWindow.innerHTML += msgEle;
-    }
-
+        }
+    });
 });

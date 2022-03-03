@@ -8,7 +8,7 @@ const chatController = {
     loadPage: function (req: Request, res: Response, next: NextFunction) {
         if (req.session.user?.docID) {
             // send the response to the webpage
-            res.render("chat");
+            res.render("chat", { session: req.session });
         } else {
             // redirect to join in page
             res.redirect('/');

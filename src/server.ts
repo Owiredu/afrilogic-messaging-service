@@ -140,12 +140,21 @@ app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) 
  *                                   Setup Socket.io
  ***********************************************************************************/
 
- const server = http.createServer(app);
- const io = new SocketIO(server);
- 
- io.sockets.on('connect', () => {
-     return app.set('socketio', io);
- });
+const server = http.createServer(app);
+const io = new SocketIO(server);
+
+// handle chat
+io.sockets.on('connect', (socket) => {
+    // handle chat messages
+    socket.on('chat message', (data) => {
+        io.emit('chat message', data);
+    });
+
+    // handle user disconnection
+    socket.on("disconnect", () => {
+        console.log("User diconnected");
+    });
+});
 
 
 // Export here and start in a diff file (for testing).
