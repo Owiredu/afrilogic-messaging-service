@@ -145,7 +145,7 @@ app.use((err: Error | CustomError, _: Request, res: Response, __: NextFunction) 
  *                                   Setup Socket.io
  ***********************************************************************************/
 
-const server = https.createServer(app);
+const server = http.createServer(app);
 const io = new SocketIO(server);
 
 // handle chat

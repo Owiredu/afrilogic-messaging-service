@@ -28,7 +28,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const compression_1 = __importDefault(require("compression"));
 const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io");
-const https_1 = __importDefault(require("https"));
+const http_1 = __importDefault(require("http"));
 const db_config_1 = __importDefault(require("@utils/db_config"));
 const index_1 = __importDefault(require("@routes/index"));
 const chat_1 = __importDefault(require("@routes/chat"));
@@ -112,7 +112,7 @@ app.use((err, _, res, __) => {
 /************************************************************************************
  *                                   Setup Socket.io
  ***********************************************************************************/
-const server = https_1.default.createServer(app);
+const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server);
 // handle chat
 io.sockets.on('connect', (socket) => {
