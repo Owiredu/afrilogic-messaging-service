@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import { NextFunction, Request, Response } from 'express';
 import UserModel from '@models/UserModel';
 import { DateTime } from 'luxon';
 import MessageModel from '@models/MessageModel';
 import ChannelModel from '@models/ChannelModel';
+import Constants from '@utils/constants';
 
 
 const chatController = {
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadPage: async function (req: Request, res: Response, next: NextFunction) {
         if (req.session.user?.docID) {
             // load the messages in the selected channel
@@ -56,6 +57,50 @@ const chatController = {
                     return;
                 });
             }
+        }
+    },
+
+    addChannel: async function(req: Request, res: Response, next: NextFunction) {
+        // get the form data
+        const formData: { name: string } = req.body;
+        const channelName = formData.name.trim();
+
+        // validate form data
+        if (!channelName.match(Constants.REQUIRED_NAME_REGEX)) {
+            res.status(400).send({
+                message: "Invalid channel name"
+            });
+            return;
+        }
+
+        // check if the channel already exists
+        const channelDoc = await ChannelModel.findOne({ name: channelName });
+
+        if (!channelDoc) {
+            // create new channel
+            const newChannel = new ChannelModel({
+                name: channelName
+            });
+
+            // save the channel
+            newChannel.save(function(err, channelObj) {
+                if (err) {
+                    // return internal server error from the database
+                    res.status(500).send({
+                        message: err.message
+                    });
+                } else {
+                    // return internal server error from the database
+                    res.status(200).send({
+                        message: `'${channelObj.name}' channel added successfully`,
+                    });
+                }
+            });
+        } else {
+            // send failure message
+            res.status(400).send({
+                message: "Channel already exists"
+            });
         }
     }
 
