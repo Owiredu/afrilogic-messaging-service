@@ -160,7 +160,7 @@ $(document).ready(function () {
                 'channelName': {
                     required: true,
                     minlength: 3,
-                    pattern: /^[^\s]{1}.{1,50}[^\s]{1}$/
+                    pattern: /^.{1,50}$/
                 }
             },
             highlight: function (input) {
