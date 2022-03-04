@@ -2,6 +2,10 @@
   "name": "messaging-service",
   "version": "0.0.0",
   "postinstall": "tsc",
+  "engines": {
+    "node": "17.x",
+    "npm": "8.x"
+  },
   "scripts": {
     "build": "./node_modules/.bin/ts-node build.ts",
     "lint": "eslint . --ext .ts",
@@ -21,7 +25,8 @@
     "exec": "./node_modules/.bin/ts-node -r tsconfig-paths/register ./src"
   },
   "_moduleAliases": {
-    "@services": "dist/services",
+    "@controllers": "dist/controllers",
+    "@utils": "dist/utils",
     "@repos": "dist/repos",
     "@entities": "dist/entities",
     "@shared": "dist/shared",
