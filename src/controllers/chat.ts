@@ -14,8 +14,11 @@ const chatController = {
             // load the messages in the selected channel
             const messageDocs = await MessageModel.find({ channel: req.session.user.channel.id }).populate("sender channel");
 
+            // load the members of the selected channel
+            const channelMemberDocs = await UserModel.find({ channel: req.session.user.channel.id });
+
             // send the response to the webpage
-            res.render("chat", { session: req.session, messageDocs: messageDocs });
+            res.render("chat", { session: req.session, messageDocs: messageDocs, channelMemberDocs: channelMemberDocs });
         } else {
             // redirect to join in page
             res.redirect('/');

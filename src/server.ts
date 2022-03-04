@@ -160,7 +160,7 @@ io.sockets.on('connect', (socket) => {
     }) => {
         // add the message to the database
         await chatController.addNewMessage(data);
-        
+
         // send the message to only people in the channel
         socket.broadcast.emit('chat-' + data.channelID, data);
     });
@@ -178,7 +178,7 @@ io.sockets.on('connect', (socket) => {
     // handle user disconnection
     socket.on("disconnect", 
     () => {
-        console.log("User diconnected");
+        // console.log("User diconnected");
     });
 });
 

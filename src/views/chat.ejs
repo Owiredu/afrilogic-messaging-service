@@ -41,16 +41,17 @@
                                     </div>
                                 </div>
                                 <ul class="user_list list-unstyled mb-0 mt-3">
-                                    <li>
-                                        <a href="javascript:void(0);">
-                                            <!-- <img src="assets/images/xs/avatar1.jpg" alt="avatar" /> -->
-                                            <div class="about">
-                                                <div class="name">Vincent Porter</div>
-                                                <div class="status online"> <i class="zmdi zmdi-circle"></i> left 7
-                                                    mins ago </div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    <% for (let i = 0; i < channelMemberDocs.length; i++) { %> 
+                                        <li>
+                                            <a href="javascript:void(0);">
+                                                <!-- <img src="assets/images/xs/avatar1.jpg" alt="avatar" /> -->
+                                                <div class="about">
+                                                    <div class="name"><%= channelMemberDocs[i].fullname %></div>
+                                                    <div class="status online">@<%= channelMemberDocs[i].username %> </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <% } %> 
                                 </ul>
                             </div>
                             <div class="chat_window body">
