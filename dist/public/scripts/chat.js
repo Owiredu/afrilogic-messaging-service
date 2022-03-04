@@ -8,7 +8,7 @@ $(document).ready(function () {
     scrollToBottom($("#chatHistory"));
 
     // Setup socket-io main connection
-    const socket = io('http://localhost:3001');
+    const socket = io(location.hostname);
 
     // handle connection event
     socket.on('connect', () => {
