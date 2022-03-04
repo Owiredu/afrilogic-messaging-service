@@ -120,4 +120,116 @@ $(document).ready(function () {
             }
         }
     });
+
+
+
+    // CHANNEL RELATED OPERATIONS
+
+
+    // show success and error messages
+    let showMsg = function (form, type, msg) {
+        let alert = $(`
+        <div class="alert alert-${type} fade show" role="alert">
+            <div class="container">
+                <div class="alert-icon">
+                    <i class="zmdi zmdi-${type == "success" ? "thumb-up" : "block"}"></i>
+                </div>
+                <span name="msg"></span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="zmdi zmdi-close"></i></span>
+                </button>
+            </div>
+        </div>
+        `);
+
+        form.find('.alert').remove();
+        alert.prependTo(form);
+        alert.find('span[name="msg"]').html(msg);
+    }
+
+    // get the add channel form div
+    var addChannelFormDiv = $("form[name='addChannelForm']");
+
+    // add channel button click event
+    $("button[name='addChannelSubmitButton']").on("click", function (event) {
+        event.preventDefault();
+
+        // validate the form data
+        let valid = $("form[name='addChannelForm']").validate({
+            rules: {
+                'channelName': {
+                    required: true,
+                    minlength: 3,
+                    pattern: /^.{1,50}$/
+                }
+            },
+            highlight: function (input) {
+                $(input).parents('.form-line').addClass('error');
+            },
+            unhighlight: function (input) {
+                $(input).parents('.form-line').removeClass('error');
+            },
+            errorPlacement: function (error, element) {
+                $(element).parents('.form-group').append(error);
+            }
+        }).form();
+
+        if (!valid) return;
+
+        // start spinner
+        $("button[name='addChannelSubmitButton']").html(`SUBMITTING <span class="spinner-border spinner-border-sm"></span>`);
+
+        // get add channel form
+        var addChannelForm = $("form[name='addChannelForm']")[0];
+
+        // disable form clicks and keypress events
+        $("input[name='channelName']").attr("disabled", "disabled");
+        $("button[name='addChannelSubmitButton']").attr("disabled", "disabled");
+
+        // handle request
+        $.ajax({
+            type: "POST",
+
+            url: "/chat/add-channel",
+
+            enctype: "application/x-www-form-urlencoded",
+
+            data: {
+                name: $("input[name='channelName']").val().trim()
+            },
+
+            success: function (result, status, xhr) {
+                // stop spinner
+                $("button[name='addChannelSubmitButton']").html("SUBMIT");
+
+                // show success message
+                showMsg(addChannelFormDiv, "success", xhr.responseJSON.message);
+
+                // enable form clicks and keypress events
+                $("input[name='channelName']").removeAttr("disabled");
+                $("button[name='addChannelSubmitButton']").removeAttr("disabled");
+
+                // reset the form
+                addChannelForm.reset();
+
+                // remove success message after 5 seconds
+                setTimeout(() => {
+                    addChannelFormDiv.find('.alert').remove();
+                }, 5000);
+            },
+
+            error: function (xhr, status, error) {
+                // stop spinner
+                $("button[name='addChannelSubmitButton']").html("SUBMIT");
+
+                // enable form clicks and keypress events
+                $("input[name='channelName']").removeAttr("disabled");
+                $("button[name='addChannelSubmitButton']").removeAttr("disabled");
+
+                // show error message
+                showMsg(addChannelFormDiv, "danger", xhr.responseJSON.message);
+            }
+        });
+
+    });
 });

@@ -16,8 +16,8 @@ const UserModel_1 = __importDefault(require("@models/UserModel"));
 const luxon_1 = require("luxon");
 const MessageModel_1 = __importDefault(require("@models/MessageModel"));
 const ChannelModel_1 = __importDefault(require("@models/ChannelModel"));
+const constants_1 = __importDefault(require("@utils/constants"));
 const chatController = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadPage: function (req, res, next) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
@@ -59,6 +59,49 @@ const chatController = {
                         return;
                     });
                 }
+            }
+        });
+    },
+    addChannel: function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // get the form data
+            const formData = req.body;
+            const channelName = formData.name.trim();
+            // validate form data
+            if (!channelName.match(constants_1.default.REQUIRED_NAME_REGEX)) {
+                res.status(400).send({
+                    message: "Invalid channel name"
+                });
+                return;
+            }
+            // check if the channel already exists
+            const channelDoc = yield ChannelModel_1.default.findOne({ name: channelName });
+            if (!channelDoc) {
+                // create new channel
+                const newChannel = new ChannelModel_1.default({
+                    name: channelName
+                });
+                // save the channel
+                newChannel.save(function (err, channelObj) {
+                    if (err) {
+                        // return internal server error from the database
+                        res.status(500).send({
+                            message: err.message
+                        });
+                    }
+                    else {
+                        // return internal server error from the database
+                        res.status(200).send({
+                            message: `'${channelObj.name}' channel added successfully`,
+                        });
+                    }
+                });
+            }
+            else {
+                // send failure message
+                res.status(400).send({
+                    message: "Channel already exists"
+                });
             }
         });
     }
