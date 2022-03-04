@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'development') {
     );
 } else {
     mongoose.connect(
-        `mongodb://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.online.dbname}?authSource=admin&readPreference=primary&directConnection=true`
+        `mongodb+srv://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.online.dbname}?retryWrites=true&w=majority`
     );
 }
 
@@ -92,7 +92,7 @@ app.use(
             // specify connection string to the mongodb database to store the sessions in
             mongoUrl: process.env.NODE_ENV === 'development' ?
                 `mongodb://${dbConfig.offline.hostname}:${dbConfig.offline.port.toString()}/${dbConfig.sessionDb}` :
-                `mongodb://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.sessionDb}?authSource=admin&readPreference=primary&directConnection=true`,
+                `mongodb+srv://${dbConfig.online.username}:${dbConfig.online.password}@${dbConfig.online.hostname}/${dbConfig.sessionDb}?retryWrites=true&w=majority`,
             // remove expired sessions at 10 minutes intervals
             autoRemove: "interval",
             autoRemoveInterval: 10,

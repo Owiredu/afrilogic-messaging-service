@@ -10,10 +10,10 @@ const dbConfig = {
     },
     
     online: {
-        hostname: "127.0.0.1",
+        hostname: "cawcmms-heroku.mp6e3.mongodb.net",
         dbname: "ams",
-        username: "owiredu",
-        password: "%24psword%3Dcawms"
+        username: "cawcmms",
+        password: "JAmUZnecM9GnnMD"
     }
 }
 
